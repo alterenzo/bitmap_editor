@@ -10,7 +10,7 @@ INIT_AND_SHOW_EXAMPLE_FILE = 'init_and_show.txt'.freeze
 INIT_AND_SHOW_EXAMPLE_OUTPUT = "OOO\nOOO\nOOO\nOOO\n".freeze
 
 INIT_AND_COLOR_EXAMPLE_FILE = 'init_and_color.txt'.freeze
-INIT_AND_COLOR_EXAMPLE_OUTPUT = "BOO\nOOO\nOOO\nOOA\nOOO\n"
+INIT_AND_COLOR_EXAMPLE_OUTPUT = "BOO\nOOO\nOOO\nOOA\nOOO\n".freeze
 
 describe 'Feature tests' do
   let(:bitmap_editor) { BitmapEditor.new }

@@ -1,8 +1,9 @@
+# Executes graphic operations on a bitmap
 class Renderer
   WHITE = 'O'.freeze
 
   def color_pixel(x:, y:, color:, bitmap:)
-    bitmap[y-1][x-1] = color
+    bitmap[y - 1][x - 1] = color
     bitmap
   end
 

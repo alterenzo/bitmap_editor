@@ -29,7 +29,7 @@ describe BitmapEditor do
       bitmap_editor.run valid_path
     end
 
-    it 'exectutes each command on file' do
+    it 'executes each command on file' do
       file = StringIO.new "I 3 4\nL 3 4 C\nS\n"
       allow(File).to receive(:open).with(valid_path).and_return(file)
 
@@ -39,7 +39,7 @@ describe BitmapEditor do
     end
   end
 
-  describe '#execute_command' do
+  describe '#execute_instruction' do
     it 'delegates the creation of a bitmap' do
       width = rand(1...5)
       height = rand(1..5)
@@ -60,10 +60,10 @@ describe BitmapEditor do
     end
 
     it 'delegates the coloring of a pixel' do
-      color_instruction = "L 1 3 R"
+      color_instruction = 'L 1 3 R'
 
       expect(renderer).to receive(:color_pixel)
-        .with(x: 1, y: 3, color: "R", bitmap: instance_of(Array))
+        .with(x: 1, y: 3, color: 'R', bitmap: instance_of(Array))
 
       bitmap_editor.execute_instruction color_instruction
     end

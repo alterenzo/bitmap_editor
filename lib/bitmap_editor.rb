@@ -1,5 +1,6 @@
 require 'renderer.rb'
 
+# Opens the provided file, iterates over each line and executes instructions
 class BitmapEditor
   INIT_INSTRUCTION = 'I'.freeze
   SHOW_INSTRUCTION = 'S'.freeze
@@ -38,15 +39,15 @@ class BitmapEditor
   end
 
   def init_instr_arguments(line)
-    height = line.split(' ')[2].to_i
-    width = line.split(' ')[1].to_i
-    {height: height, width: width}
+    height = line.split[2].to_i
+    width = line.split[1].to_i
+    { height: height, width: width }
   end
 
   def color_instr_arguments(line)
-    x = line.split(' ')[1].to_i
-    y = line.split(' ')[2].to_i
-    color = line.split(' ')[3]
-    {x: x, y: y, color: color, bitmap: @bitmap.dup}
+    x = line.split[1].to_i
+    y = line.split[2].to_i
+    color = line.split[3]
+    { x: x, y: y, color: color, bitmap: @bitmap.dup }
   end
 end

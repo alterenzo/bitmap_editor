@@ -1,7 +1,6 @@
 require 'renderer.rb'
 
 describe Renderer do
-
   subject(:renderer) { described_class.new }
 
   describe '#create_bitmap' do

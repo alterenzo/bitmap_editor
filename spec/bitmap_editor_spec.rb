@@ -30,16 +30,57 @@ describe BitmapEditor do
       bitmap_editor.run valid_path
     end
 
-    it 'initializes a new bitmap image with width and heigth' do
-      width = 1 + rand(5)
-      heigth = 1 + rand(5)
-      init_command = StringIO.new "I #{width} #{heigth}\n"
-      allow(File).to receive(:open).with(valid_path).and_return(init_command)
+    it 'delegates the display of the bitmap' do
+      show_command = StringIO.new "S\n"
+      allow(File).to receive(:open).with(valid_path).and_return(show_command)
+
+      expect(bitmap_editor).to receive(:show_bitmap).once
 
       bitmap_editor.run valid_path
+    end
 
-      expect(bitmap_editor.bitmap.length).to eq heigth
-      expect(bitmap_editor.bitmap[0].length).to eq width
+    it 'delegates the creation of a bitmap to the correct method when it receives the init instruction' do
+      width = 1 + rand(5)
+      height = 1 + rand(5)
+      init_command = StringIO.new "I #{width} #{height}\n"
+      allow(File).to receive(:open).with(valid_path).and_return(init_command)
+
+      expect(bitmap_editor).to receive(:create_bitmap).with(height: height, width: width)
+
+      bitmap_editor.run valid_path
+    end
+  end
+
+  describe '#create_bitmap' do
+    it 'creates a two dimensional array with given height and width' do
+      width = 1 + rand(5)
+      height = 1 + rand(5)
+
+      result = bitmap_editor.create_bitmap(height: height, width: width)
+
+      expect(result.length).to eq height
+      expect(result[0].length).to eq width
+    end
+
+    it 'fills the newly created bitmap with white' do
+      bitmap = bitmap_editor.create_bitmap(height: 2, width: 2)
+
+      expect(bitmap.flatten.all? { |color| color.equal? BitmapEditor::WHITE })
+        .to be true
+    end
+  end
+
+  describe '#show_bitmap' do
+    it 'raises an error if there is no bitmap to show' do
+      bitmap = Array.new
+
+      expect { bitmap_editor.show_bitmap(bitmap: bitmap) }.to raise_error("There is not image to show yet")
+    end
+
+    it 'prints a representation of the bitmap to the standard output' do
+      bitmap = Array.new(2, Array.new(2, BitmapEditor::WHITE))
+      expect { bitmap_editor.show_bitmap(bitmap: bitmap) }
+        .to output("OO\nOO\n").to_stdout
     end
   end
 end

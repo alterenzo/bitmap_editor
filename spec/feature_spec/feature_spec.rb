@@ -15,7 +15,7 @@ describe 'Feature tests' do
       .to output(ALL_COMMANDS_EXAMPLE_OUTPUT).to_stdout
   end
 
-  xit 'creates and shows a blank bitmap' do
+  it 'creates and shows a blank bitmap' do
     expect { bitmap_editor.run INIT_AND_SHOW_EXAMPLE_FILE }
       .to output(INIT_AND_SHOW_EXAMPLE_OUTPUT).to_stdout
   end

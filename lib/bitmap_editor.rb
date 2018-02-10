@@ -1,6 +1,6 @@
 class BitmapEditor
 
-  attr_reader :bitmap
+  WHITE = "O"
 
   def run(file)
     raise "Could not find file at #{file}" if file.nil? || !File.exists?(file)
@@ -9,14 +9,28 @@ class BitmapEditor
       line = line.chomp
       case line[0]
       when 'I'
-        heigth = line.split(' ')[2].to_i
+        height = line.split(' ')[2].to_i
         width = line.split(' ')[1].to_i
-        @bitmap = Array.new(heigth, Array.new(width, "O"))
+        self.bitmap = create_bitmap(height: height, width: width)
       when 'S'
-          puts "There is no image"
+        show_bitmap(bitmap: bitmap)
       else
           puts 'unrecognised command :('
       end
     end
   end
+
+  def create_bitmap(height:, width:)
+    Array.new(height, Array.new(width, WHITE))
+  end
+
+  def show_bitmap(bitmap:)
+    raise "There is not image to show yet" if bitmap.nil? || bitmap.empty?
+    bitmap.each { |row| puts row.join }
+  end
+
+  private
+
+  attr_accessor :bitmap
+
 end

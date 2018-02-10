@@ -1,10 +1,12 @@
+require 'renderer.rb'
+
 class BitmapEditor
-  WHITE = 'O'.freeze
   INIT_INSTRUCTION = 'I'.freeze
   SHOW_INSTRUCTION = 'S'.freeze
   COLOR_INSTRUCTION = 'L'.freeze
 
-  def initialize
+  def initialize(renderer: Renderer.new)
+    @renderer = renderer
     @bitmap = []
   end
 
@@ -21,31 +23,17 @@ class BitmapEditor
     when INIT_INSTRUCTION
       height = line.split(' ')[2].to_i
       width = line.split(' ')[1].to_i
-      @bitmap = create_bitmap(height: height, width: width)
+      @bitmap = @renderer.create_bitmap(height: height, width: width)
     when SHOW_INSTRUCTION
-      show_bitmap(bitmap: @bitmap)
+      @renderer.show_bitmap(bitmap: @bitmap)
     when COLOR_INSTRUCTION
       x = line.split(' ')[1].to_i
       y = line.split(' ')[2].to_i
       color = line.split(' ')[3]
-      @bitmap = color_pixel(x: x, y: y, color: color, image: @bitmap)
+      @bitmap = @renderer.color_pixel(x: x, y: y, color: color, image: @bitmap)
     else
       puts 'unrecognised command :('
     end
-  end
-
-  def color_pixel(x:, y:, color:, image:)
-    image[y-1][x-1] = color
-    image
-  end
-
-  def create_bitmap(height:, width:)
-    Array.new(height) { Array.new(width, WHITE) }
-  end
-
-  def show_bitmap(bitmap:)
-    raise 'There is not image to show yet' if bitmap.nil? || bitmap.empty?
-    bitmap.each { |row| puts row.join }
   end
 
   private

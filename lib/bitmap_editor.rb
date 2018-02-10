@@ -21,16 +21,11 @@ class BitmapEditor
   def execute_instruction(line)
     case extract_instruction(line)
     when INIT_INSTRUCTION
-      height = line.split(' ')[2].to_i
-      width = line.split(' ')[1].to_i
-      @bitmap = @renderer.create_bitmap(height: height, width: width)
+      @bitmap = @renderer.create_bitmap(init_instr_arguments(line))
     when SHOW_INSTRUCTION
       @renderer.show_bitmap(bitmap: @bitmap)
     when COLOR_INSTRUCTION
-      x = line.split(' ')[1].to_i
-      y = line.split(' ')[2].to_i
-      color = line.split(' ')[3]
-      @bitmap = @renderer.color_pixel(x: x, y: y, color: color, image: @bitmap)
+      @bitmap = @renderer.color_pixel(color_instr_arguments(line))
     else
       puts 'unrecognised command :('
     end
@@ -40,5 +35,18 @@ class BitmapEditor
 
   def extract_instruction(line)
     line.chomp[0]
+  end
+
+  def init_instr_arguments(line)
+    height = line.split(' ')[2].to_i
+    width = line.split(' ')[1].to_i
+    {height: height, width: width}
+  end
+
+  def color_instr_arguments(line)
+    x = line.split(' ')[1].to_i
+    y = line.split(' ')[2].to_i
+    color = line.split(' ')[3]
+    {x: x, y: y, color: color, bitmap: @bitmap.dup}
   end
 end

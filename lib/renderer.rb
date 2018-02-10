@@ -1,9 +1,9 @@
 class Renderer
   WHITE = 'O'.freeze
-  
-  def color_pixel(x:, y:, color:, image:)
-    image[y-1][x-1] = color
-    image
+
+  def color_pixel(x:, y:, color:, bitmap:)
+    bitmap[y-1][x-1] = color
+    bitmap
   end
 
   def create_bitmap(height:, width:)

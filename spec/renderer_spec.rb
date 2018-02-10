@@ -42,7 +42,7 @@ describe Renderer do
     it 'colors a pixel at given coordinates on the given bitmal' do
       bitmap = Array.new(4, Array.new(4, Renderer::WHITE))
 
-      result = renderer.color_pixel(x: 1, y: 2, color: 'C', image: bitmap)
+      result = renderer.color_pixel(x: 1, y: 2, color: 'C', bitmap: bitmap)
 
       expect(result[1][0]).to eq 'C'
     end

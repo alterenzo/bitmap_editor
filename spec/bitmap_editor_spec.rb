@@ -29,27 +29,55 @@ describe BitmapEditor do
       bitmap_editor.run valid_path
     end
 
-    it 'delegates the display of the bitmap' do
-      show_command = StringIO.new "S\n"
-      allow(File).to receive(:open).with(valid_path).and_return(show_command)
+    it 'exectutes each command on file' do
+      file = StringIO.new "I 3 4\nL 3 4 C\nS\n"
+      allow(File).to receive(:open).with(valid_path).and_return(file)
 
-      expect(bitmap_editor).to receive(:show_bitmap).once
-
-      bitmap_editor.run valid_path
-    end
-
-    it 'delegates the creation of a bitmap' do
-      width = rand(1...5)
-      height = rand(1..5)
-      init_command = StringIO.new "I #{width} #{height}\n"
-      allow(File).to receive(:open).with(valid_path).and_return(init_command)
-
-      expect(bitmap_editor).to receive(:create_bitmap)
-        .with(height: height, width: width)
+      expect(bitmap_editor).to receive(:execute_instruction).exactly(3).times
 
       bitmap_editor.run valid_path
     end
   end
+
+  describe '#execute_command' do
+    it 'delegates the creation of a bitmap' do
+      width = rand(1...5)
+      height = rand(1..5)
+      init_instruction = "I #{width} #{height}\n"
+
+      expect(bitmap_editor).to receive(:create_bitmap)
+        .with(height: height, width: width)
+
+      bitmap_editor.execute_instruction init_instruction
+    end
+
+    it 'delegates the display of the bitmap' do
+      show_instruction = "S\n"
+
+      expect(bitmap_editor).to receive(:show_bitmap).once
+
+      bitmap_editor.execute_instruction show_instruction
+    end
+
+    it 'delegates the coloring of a pixel' do
+      color_instruction = "L 1 3 R"
+
+      expect(bitmap_editor).to receive(:color_pixel).with(x: 1, y: 3, color: "R",image: instance_of(Array))
+
+      bitmap_editor.execute_instruction color_instruction
+    end
+  end
+
+  describe '#color_pixel' do
+    it 'colors a pixel at given coordinates on the given bitmal' do
+      bitmap = Array.new(4, Array.new(4, BitmapEditor::WHITE))
+
+      result = bitmap_editor.color_pixel(x: 1, y: 2, color: 'C', image: bitmap)
+
+      expect(result[1][0]).to eq 'C'
+    end
+  end
+
 
   describe '#create_bitmap' do
     it 'creates a two dimensional array with given height and width' do

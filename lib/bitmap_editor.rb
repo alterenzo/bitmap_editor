@@ -1,9 +1,8 @@
 class BitmapEditor
-
-  WHITE = "O"
+  WHITE = 'O'.freeze
 
   def run(file)
-    raise "Could not find file at #{file}" if file.nil? || !File.exists?(file)
+    raise "Could not find file at #{file}" if file.nil? || !File.exist?(file)
 
     File.open(file).each_line do |line|
       line = line.chomp
@@ -15,7 +14,7 @@ class BitmapEditor
       when 'S'
         show_bitmap(bitmap: bitmap)
       else
-          puts 'unrecognised command :('
+        puts 'unrecognised command :('
       end
     end
   end
@@ -25,12 +24,11 @@ class BitmapEditor
   end
 
   def show_bitmap(bitmap:)
-    raise "There is not image to show yet" if bitmap.nil? || bitmap.empty?
+    raise 'There is not image to show yet' if bitmap.nil? || bitmap.empty?
     bitmap.each { |row| puts row.join }
   end
 
   private
 
   attr_accessor :bitmap
-
 end

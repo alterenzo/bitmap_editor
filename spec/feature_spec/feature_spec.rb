@@ -6,7 +6,6 @@ ALL_COMMANDS_EXAMPLE_OUTPUT ="OOOOO\nOOZZZ\nAWOOO\nOWOOO\nOWOOO\nOWOOO\n"
 INIT_AND_SHOW_EXAMPLE_FILE = 'spec/feature_spec/test_files/init_and_show.txt'
 INIT_AND_SHOW_EXAMPLE_OUTPUT = "OOO\nOOO\nOOO\nOOO\n"
 
-
 describe 'Feature tests' do
 
   let(:bitmap_editor) { BitmapEditor.new }

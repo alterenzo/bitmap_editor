@@ -62,7 +62,8 @@ describe BitmapEditor do
     it 'delegates the coloring of a pixel' do
       color_instruction = "L 1 3 R"
 
-      expect(renderer).to receive(:color_pixel).with(x: 1, y: 3, color: "R",image: instance_of(Array))
+      expect(renderer).to receive(:color_pixel)
+        .with(x: 1, y: 3, color: "R", image: instance_of(Array))
 
       bitmap_editor.execute_instruction color_instruction
     end

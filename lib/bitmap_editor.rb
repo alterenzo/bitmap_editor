@@ -1,7 +1,7 @@
 class BitmapEditor
 
   def run(file)
-    return puts "please provide correct file" if file.nil? || !File.exists?(file)
+    raise "Could not find file at #{file}" if file.nil? || !File.exists?(file)
 
     File.open(file).each do |line|
       line = line.chomp

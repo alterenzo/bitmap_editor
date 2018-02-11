@@ -38,12 +38,67 @@ describe Renderer do
   end
 
   describe '#color_pixel' do
-    it 'colors a pixel at given coordinates on the given bitmal' do
-      bitmap = Array.new(4, Array.new(4, Renderer::WHITE))
+    it 'colors a pixel at given coordinates on the given bitmap' do
+      bitmap = Array.new(3) { Array.new(3, Renderer::WHITE) }
 
       result = renderer.color_pixel(x: 1, y: 2, color: 'C', bitmap: bitmap)
 
-      expect(result[1][0]).to eq 'C'
+      expect(result).to eq [["O", "O", "O"], ["C", "O", "O"], ["O", "O", "O"]]
+    end
+
+    it 'raises an exception if the coordinates are out of bounds' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect { renderer.color_pixel(x: 5, y: 3, color: 'C', bitmap: bitmap) }
+        .to raise_error('The provided coordinates are out of bounds')
+    end
+
+    it 'raises an exception if the bitmap is empty' do
+      bitmap = []
+
+      expect { renderer.color_pixel(x: 5, y: 3, color: 'C', bitmap: bitmap) }
+        .to raise_error('The bitmap cannot be empty')
+    end
+  end
+
+  describe '#horizontal_line' do
+    it 'draws an horizontal line on the bitmap' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      result = renderer.horizontal_line(row: 2, x1: 2, x2: 4, color: 'C', bitmap: bitmap)
+
+      expect(result).to eq [["O", "O", "O", "O"], ["O", "C", "C", "C"],
+                            ["O", "O", "O", "O"], ["O", "O", "O", "O"]]
+    end
+
+    it 'draws an horizontal line on the bitmap on non-white pixels' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      bitmap = renderer.horizontal_line(row: 2, x1: 2, x2: 4, color: 'C', bitmap: bitmap)
+      result = renderer.horizontal_line(row: 2, x1: 1, x2: 3, color: 'A', bitmap: bitmap)
+
+      expect(result).to eq [["O", "O", "O", "O"], ["A", "A", "A", "C"],
+                            ["O", "O", "O", "O"], ["O", "O", "O", "O"]]
+    end
+  end
+
+  describe '#vertical_line' do
+    it 'draws a vertical line on the bitmap' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      result = renderer.vertical_line(column: 2, y1: 2, y2: 4, color: 'C', bitmap: bitmap)
+
+      expect(result).to eq [["O", "O", "O", "O"], ["O", "C", "O", "O"],
+                          ["O", "C", "O", "O"], ["O", "C", "O", "O"]]
+    end
+
+    it 'draws a vertical line on the bitmap on non-white pixels' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      bitmap = renderer.vertical_line(column: 2, y1: 2, y2: 4, color: 'C', bitmap: bitmap)
+      result = renderer.vertical_line(column: 2, y1: 1, y2: 3, color: 'B', bitmap: bitmap)
+      expect(result).to eq [["O", "B", "O", "O"], ["O", "B", "O", "O"],
+                            ["O", "B", "O", "O"], ["O", "C", "O", "O"]]
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'bitmap_editor.rb'
 
-EXAMPLE_DIR = 'spec/feature_spec/test_files/'.freeze
+TEST_DIR = 'spec/feature_spec/test_files/'.freeze
 
 ALL_COMMANDS_EXAMPLE_FILE = 'all_commands_example.txt'.freeze
 ALL_COMMANDS_EXAMPLE_OUTPUT = "OOOOO\nOOZZZ\nAWOOO\nOWOOO\n" \
@@ -15,18 +15,19 @@ INIT_AND_COLOR_EXAMPLE_OUTPUT = "BOO\nOOO\nOOO\nOOA\nOOO\n".freeze
 describe 'Feature tests' do
   let(:bitmap_editor) { BitmapEditor.new }
 
-  xit 'creates a bitmap cycling through all command types on a file' do
-    expect { bitmap_editor.run EXAMPLE_DIR + ALL_COMMANDS_EXAMPLE_FILE }
-      .to output(ALL_COMMANDS_EXAMPLE_OUTPUT).to_stdout
+  it 'creates a bitmap cycling through all command types on a file' do
+    run_feature_test(ALL_COMMANDS_EXAMPLE_FILE, ALL_COMMANDS_EXAMPLE_OUTPUT)
   end
 
   it 'creates and shows a blank bitmap' do
-    expect { bitmap_editor.run EXAMPLE_DIR + INIT_AND_SHOW_EXAMPLE_FILE }
-      .to output(INIT_AND_SHOW_EXAMPLE_OUTPUT).to_stdout
+    run_feature_test(INIT_AND_SHOW_EXAMPLE_FILE, INIT_AND_SHOW_EXAMPLE_OUTPUT)
   end
 
   it 'creates a bitmap and colors two pixels' do
-    expect { bitmap_editor.run EXAMPLE_DIR + INIT_AND_COLOR_EXAMPLE_FILE }
-      .to output(INIT_AND_COLOR_EXAMPLE_OUTPUT).to_stdout
+    run_feature_test(INIT_AND_COLOR_EXAMPLE_FILE, INIT_AND_COLOR_EXAMPLE_OUTPUT)
+  end
+
+  def run_feature_test(filename, output)
+    expect { bitmap_editor.run TEST_DIR + filename }.to output(output).to_stdout
   end
 end

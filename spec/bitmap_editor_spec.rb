@@ -67,5 +67,23 @@ describe BitmapEditor do
 
       bitmap_editor.execute_instruction color_instruction
     end
+
+    it 'delegates the coloring of an horizontal line' do
+      color_instruction = 'H 1 3 4 R'
+
+      expect(renderer).to receive(:horizontal_line)
+        .with(row: 4, x1: 1, x2: 3, color: 'R', bitmap: instance_of(Array))
+
+      bitmap_editor.execute_instruction color_instruction
+    end
+
+    it 'delegates the coloring of a vertical line' do
+      color_instruction = 'V 1 3 4 C'
+
+      expect(renderer).to receive(:vertical_line)
+        .with(column: 1, y1: 3, y2: 4, color: 'C', bitmap: instance_of(Array))
+
+      bitmap_editor.execute_instruction color_instruction
+    end
   end
 end

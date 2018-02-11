@@ -47,7 +47,7 @@ describe Renderer do
       bitmap = []
 
       expect { renderer.show_bitmap(bitmap: bitmap) }
-        .to raise_error('There is not image to show')
+        .to raise_error('The bitmap cannot be empty')
     end
 
     it 'prints a representation of the bitmap to the standard output' do
@@ -147,14 +147,14 @@ describe Renderer do
       bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
 
       expect{ renderer.horizontal_line(row: 2, x1: 3, x2: 2, color: 'C', bitmap: bitmap) }
-        .to raise_error 'The first X coordinate must be smaller than the second'
+        .to raise_error 'The first coordinate of the range must be smaller than the second'
     end
 
     it 'raises an error if x1 == x2' do
       bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
 
       expect{ renderer.horizontal_line(row: 2, x1: 2, x2: 2, color: 'C', bitmap: bitmap) }
-        .to raise_error 'The first X coordinate must be smaller than the second'
+        .to raise_error 'The first coordinate of the range must be smaller than the second'
     end
 
     it 'raises an error if the X coordinates are out of bounds' do
@@ -209,14 +209,14 @@ describe Renderer do
       bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
 
       expect{ renderer.vertical_line(column: 2, y1: 3, y2: 2, color: 'C', bitmap: bitmap) }
-        .to raise_error 'The first Y coordinate must be smaller than the second'
+        .to raise_error 'The first coordinate of the range must be smaller than the second'
     end
 
     it 'raises an error if y1 == y2' do
       bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
 
       expect{ renderer.vertical_line(column: 2, y1: 2, y2: 2, color: 'C', bitmap: bitmap) }
-        .to raise_error 'The first Y coordinate must be smaller than the second'
+        .to raise_error 'The first coordinate of the range must be smaller than the second'
     end
 
     it 'raises an error if the Y coordinates are out of bounds' do

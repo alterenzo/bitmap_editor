@@ -14,8 +14,28 @@ describe Renderer do
       expect(result[0].length).to eq width
     end
 
+    it "will not create a bitmap with height > #{Renderer::MAX_HEIGHT}" do
+      expect{ renderer.create_bitmap(height: 251, width: 5) }
+        .to raise_error "Dimesions are limited to #{Renderer::MAX_WIDTH} x #{Renderer::MAX_HEIGHT}"
+    end
+
+    it "will not create a bitmap with width > #{Renderer::MAX_WIDTH}" do
+      expect{ renderer.create_bitmap(height: 25, width: 251) }
+        .to raise_error "Dimesions are limited to #{Renderer::MAX_WIDTH} x #{Renderer::MAX_HEIGHT}"
+    end
+
+    it 'raises an error if height < 1' do
+      expect{ renderer.create_bitmap(height: 0, width: 5) }
+        .to raise_error 'Dimensions must be bigger than 0'
+    end
+
+    it 'raises an error if width < 1' do
+      expect{ renderer.create_bitmap(height: 2, width: -1) }
+        .to raise_error 'Dimensions must be bigger than 0'
+    end
+
     it 'fills the newly created bitmap with white' do
-      bitmap = renderer.create_bitmap(height: 2, width: 2)
+      bitmap = renderer.create_bitmap(height: 250, width: 250)
 
       expect(bitmap.flatten.all? { |color| color.equal? Renderer::WHITE })
         .to be true
@@ -27,7 +47,7 @@ describe Renderer do
       bitmap = []
 
       expect { renderer.show_bitmap(bitmap: bitmap) }
-        .to raise_error('There is not image to show yet')
+        .to raise_error('There is not image to show')
     end
 
     it 'prints a representation of the bitmap to the standard output' do
@@ -46,6 +66,13 @@ describe Renderer do
       expect(result).to eq [["O", "O", "O"], ["C", "O", "O"], ["O", "O", "O"]]
     end
 
+    it 'raises an error if the bitmap is nil' do
+      bitmap = nil
+
+      expect{ renderer.color_pixel(x: 1, y: 2, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The bitmap cannot be empty'
+    end
+
     it 'raises an exception if the coordinates are out of bounds' do
       bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
 
@@ -58,6 +85,20 @@ describe Renderer do
 
       expect { renderer.color_pixel(x: 5, y: 3, color: 'C', bitmap: bitmap) }
         .to raise_error('The bitmap cannot be empty')
+    end
+
+    it 'raises an exception if x < 1' do
+      bitmap = Array.new(1) { Array.new(1, Renderer::WHITE) }
+
+      expect { renderer.color_pixel(x: 0, y: 3, color: 'C', bitmap: bitmap) }
+        .to raise_error('The provided coordinates are out of bounds')
+    end
+
+    it 'raises an exception if y < 1' do
+      bitmap = Array.new(1) { Array.new(1, Renderer::WHITE) }
+
+      expect { renderer.color_pixel(x: 5, y: -4, color: 'C', bitmap: bitmap) }
+        .to raise_error('The provided coordinates are out of bounds')
     end
   end
 
@@ -80,6 +121,48 @@ describe Renderer do
       expect(result).to eq [["O", "O", "O", "O"], ["A", "A", "A", "C"],
                             ["O", "O", "O", "O"], ["O", "O", "O", "O"]]
     end
+
+    it 'raises an error if "row" is out of bounds' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.horizontal_line(row: 5, x1: 2, x2: 4, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The row number is out of bounds'
+    end
+
+    it 'raises an error if the bitmap is empty' do
+      bitmap = []
+
+      expect{ renderer.horizontal_line(row: 5, x1: 2, x2: 4, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The bitmap cannot be empty'
+    end
+
+    it 'raises an error if the bitmap is nil' do
+      bitmap = nil
+
+      expect{ renderer.horizontal_line(row: 5, x1: 2, x2: 4, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The bitmap cannot be empty'
+    end
+
+    it 'raises an error if x1 > x2' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.horizontal_line(row: 2, x1: 3, x2: 2, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The first X coordinate must be smaller than the second'
+    end
+
+    it 'raises an error if x1 == x2' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.horizontal_line(row: 2, x1: 2, x2: 2, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The first X coordinate must be smaller than the second'
+    end
+
+    it 'raises an error if the X coordinates are out of bounds' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.horizontal_line(row: 2, x1: 4, x2: 5, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The X coordinates are out of bounds'
+    end
   end
 
   describe '#vertical_line' do
@@ -99,6 +182,48 @@ describe Renderer do
       result = renderer.vertical_line(column: 2, y1: 1, y2: 3, color: 'B', bitmap: bitmap)
       expect(result).to eq [["O", "B", "O", "O"], ["O", "B", "O", "O"],
                             ["O", "B", "O", "O"], ["O", "C", "O", "O"]]
+    end
+
+    it 'raises an error if the bitmap is empty' do
+      bitmap = []
+
+      expect{ renderer.vertical_line(column: 5, y1: 2, y2: 4, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The bitmap cannot be empty'
+    end
+
+    it 'raises an error if the bitmap is nil' do
+      bitmap = nil
+
+      expect{ renderer.vertical_line(column: 5, y1: 2, y2: 4, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The bitmap cannot be empty'
+    end
+
+    it 'raises an error if "column" is out of bounds' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.vertical_line(column: 5, y1: 2, y2: 4, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The column number is out of bounds'
+    end
+
+    it 'raises an error if y1 > y2' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.vertical_line(column: 2, y1: 3, y2: 2, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The first Y coordinate must be smaller than the second'
+    end
+
+    it 'raises an error if y1 == y2' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.vertical_line(column: 2, y1: 2, y2: 2, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The first Y coordinate must be smaller than the second'
+    end
+
+    it 'raises an error if the Y coordinates are out of bounds' do
+      bitmap = Array.new(4) { Array.new(4, Renderer::WHITE) }
+
+      expect{ renderer.vertical_line(column: 2, y1: 4, y2: 5, color: 'C', bitmap: bitmap) }
+        .to raise_error 'The Y coordinates are out of bounds'
     end
   end
 end

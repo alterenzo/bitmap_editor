@@ -9,6 +9,15 @@ describe BitmapEditor do
 
   before(:each) do
     allow(File).to receive(:exist?).with(valid_path).and_return(true)
+    allow(renderer).to receive(:create_bitmap)
+    allow(renderer).to receive(:color_pixel)
+    allow(renderer).to receive(:horizontal_line)
+    allow(renderer).to receive(:vertical_line)
+
+    allow(bitmap_editor).to receive(:validate_init_instruction)
+    allow(bitmap_editor).to receive(:validate_color_pixel_instruction)
+    allow(bitmap_editor).to receive(:validate_horizontal_line_instruction)
+    allow(bitmap_editor).to receive(:validate_vertical_line_instruction)
   end
 
   it { is_expected.to respond_to(:run).with(1).argument }
@@ -40,6 +49,42 @@ describe BitmapEditor do
   end
 
   describe '#execute_instruction' do
+    it 'calls a method to validate the init instruction' do
+      instruction = 'I 3 4'
+
+      expect(bitmap_editor).to receive(:validate_init_instruction)
+        .with(instruction)
+
+      bitmap_editor.execute_instruction instruction
+    end
+
+    it 'calls a method to validate the color pixel instruction' do
+      instruction = 'L 3 4 F'
+
+      expect(bitmap_editor).to receive(:validate_color_pixel_instruction)
+        .with(instruction)
+
+      bitmap_editor.execute_instruction instruction
+    end
+
+    it 'calls a method to validate the horizontal line instruction' do
+      instruction = 'H 1 3 4 F'
+
+      expect(bitmap_editor).to receive(:validate_horizontal_line_instruction)
+        .with(instruction)
+
+      bitmap_editor.execute_instruction instruction
+    end
+
+    it 'calls a method to validate the vertical line instruction' do
+      instruction = 'V 1 3 4 F'
+
+      expect(bitmap_editor).to receive(:validate_vertical_line_instruction)
+        .with(instruction)
+
+      bitmap_editor.execute_instruction instruction
+    end
+
     it 'delegates the creation of a bitmap' do
       width = rand(1...5)
       height = rand(1..5)

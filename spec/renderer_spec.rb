@@ -42,6 +42,17 @@ describe Renderer do
     end
   end
 
+  describe '#clear_bitmap' do
+    it 'clears the bitmap and sets all pixels to white' do
+      bitmap = Array.new(2) { Array.new(2, "C") }
+
+      result = renderer.clear(bitmap: bitmap)
+
+      expect(result.flatten.all? { |color| color.equal? Renderer::WHITE })
+        .to be true
+    end
+  end
+
   describe '#show_bitmap' do
     it 'raises an error if there is no bitmap to show' do
       bitmap = []
@@ -51,7 +62,7 @@ describe Renderer do
     end
 
     it 'prints a representation of the bitmap to the standard output' do
-      bitmap = Array.new(2, Array.new(2, Renderer::WHITE))
+      bitmap = Array.new(2) { Array.new(2, Renderer::WHITE) }
       expect { renderer.show_bitmap(bitmap: bitmap) }
         .to output("OO\nOO\n").to_stdout
     end

@@ -3,10 +3,6 @@ require 'renderer.rb'
 describe Renderer do
   subject(:renderer) { described_class.new }
 
-  before(:each) do
-    # allow(renderer).to receive(:validate)
-  end
-
   describe '#create_bitmap' do
     it 'creates a two dimensional array with given height and width' do
       width = rand(1..5)

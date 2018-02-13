@@ -46,6 +46,54 @@ describe BitmapEditor do
 
       bitmap_editor.run valid_path
     end
+
+    it 'stops executing if an error is encountered' do
+      file = StringIO.new "GOOD\nGOOD\nFAIL\nGOOD"
+      allow(File).to receive(:open).with(valid_path).and_return(file)
+
+      allow(bitmap_editor).to receive(:execute_instruction).with("FAIL\n").and_raise(UnrecognisedInstructionError.new('errorMessage'))
+      allow(bitmap_editor).to receive(:execute_instruction).with("GOOD\n")
+
+      expect(bitmap_editor).to receive(:execute_instruction).exactly(3).times
+
+      bitmap_editor.run valid_path
+    end
+
+    it 'catches UnrecognisedInstructionError raised during the execution and outputs on the console' do
+      file = StringIO.new "FAIL"
+      allow(File).to receive(:open).with(valid_path).and_return(file)
+
+      allow(bitmap_editor).to receive(:execute_instruction).with('FAIL').and_raise(UnrecognisedInstructionError.new('errorMessage'))
+
+      expected_message = "An error of type UnrecognisedInstructionError was encountered while executing the"\
+        " instruction: FAIL\nError message: errorMessage\n"
+
+      expect{ bitmap_editor.run valid_path }.to output(expected_message).to_stdout
+    end
+
+    it 'catches InvalidInputError raised during the execution and outputs on the console' do
+      file = StringIO.new "FAIL"
+      allow(File).to receive(:open).with(valid_path).and_return(file)
+
+      allow(bitmap_editor).to receive(:execute_instruction).with('FAIL').and_raise(InvalidInputError.new('errorMessage'))
+
+      expected_message = "An error of type InvalidInputError was encountered while executing the"\
+        " instruction: FAIL\nError message: errorMessage\n"
+
+      expect{ bitmap_editor.run valid_path }.to output(expected_message).to_stdout
+    end
+
+    it 'catches RendererError raised during the execution and outputs on the console' do
+      file = StringIO.new "FAIL"
+      allow(File).to receive(:open).with(valid_path).and_return(file)
+
+      allow(bitmap_editor).to receive(:execute_instruction).with('FAIL').and_raise(RendererError.new('errorMessage'))
+
+      expected_message = "An error of type RendererError was encountered while executing the"\
+        " instruction: FAIL\nError message: errorMessage\n"
+
+      expect{ bitmap_editor.run valid_path }.to output(expected_message).to_stdout
+    end
   end
 
   describe '#execute_instruction' do
@@ -96,6 +144,15 @@ describe BitmapEditor do
       bitmap_editor.execute_instruction init_instruction
     end
 
+    it 'delegates the clearing of the bitmap' do
+      clear_instruction = 'C'
+
+      expect(renderer).to receive(:clear_bitmap)
+        .with(bitmap: instance_of(Array))
+
+      bitmap_editor.execute_instruction clear_instruction
+    end
+
     it 'delegates the display of the bitmap' do
       show_instruction = "S\n"
 
@@ -129,6 +186,12 @@ describe BitmapEditor do
         .with(column: 1, y1: 3, y2: 4, color: 'C', bitmap: instance_of(Array))
 
       bitmap_editor.execute_instruction color_instruction
+    end
+
+    it 'raises an error if the input is not recognised' do
+      unrecognised_instruction = 'UNRECOGNISED'
+      expect{ bitmap_editor.execute_instruction(unrecognised_instruction) }
+        .to raise_error UnrecognisedInstructionError
     end
   end
 end

@@ -1,5 +1,6 @@
 require_relative './renderer.rb'
 require_relative 'validators/bitmap_editor_input_validator.rb'
+require_relative 'errors/unrecognised_instruction_error.rb'
 
 # Opens the provided file, iterates over each line and executes instructions
 class BitmapEditor
@@ -10,6 +11,7 @@ class BitmapEditor
   COLOR_INSTRUCTION = 'L'.freeze
   HORIZONTAL_LINE_INSTRUCTION = 'H'.freeze
   VERTICAL_LINE_INSTRUCTION = 'V'.freeze
+  CLEAR_INSTRUCTION = 'C'.freeze
 
   def initialize(renderer: Renderer.new)
     @renderer = renderer
@@ -20,7 +22,13 @@ class BitmapEditor
     raise "Could not find file at #{file}" if file.nil? || !File.exist?(file)
 
     File.open(file).each_line do |line|
-      execute_instruction(line)
+      begin
+        execute_instruction(line)
+      rescue UnrecognisedInstructionError, InvalidInputError, RendererError => e
+        puts "An error of type #{e.class} was encountered while executing the"\
+          " instruction: #{line}\nError message: #{e.message}"
+        break
+      end
     end
   end
 
@@ -40,8 +48,10 @@ class BitmapEditor
     when VERTICAL_LINE_INSTRUCTION
       validate_vertical_line_instruction(line)
       @bitmap = @renderer.vertical_line(vertical_line_instr_arguments(line))
+    when CLEAR_INSTRUCTION
+      @bitmap = @renderer.clear_bitmap(bitmap: @bitmap.dup)
     else
-      puts 'unrecognised command :('
+      raise UnrecognisedInstructionError.new("The instruction \"#{line}\" is not supported")
     end
   end
 

@@ -26,7 +26,7 @@ class BitmapEditor
         execute_instruction(line)
       rescue UnrecognisedInstructionError, InvalidInputError, RendererError => e
         puts "An error of type #{e.class} was encountered while executing the"\
-          " instruction: #{line}\nError message: #{e.message}"
+          " instruction: #{line.chomp}\nError message: #{e.message}"
         break
       end
     end
@@ -49,9 +49,9 @@ class BitmapEditor
       validate_vertical_line_instruction(line)
       @bitmap = @renderer.vertical_line(vertical_line_instr_arguments(line))
     when CLEAR_INSTRUCTION
-      @bitmap = @renderer.clear_bitmap(bitmap: @bitmap.dup)
+      @bitmap = @renderer.clear(bitmap: @bitmap.dup)
     else
-      raise UnrecognisedInstructionError.new("The instruction \"#{line}\" is not supported")
+      raise UnrecognisedInstructionError.new("The instruction \"#{line.chomp}\" is not supported")
     end
   end
 
@@ -87,7 +87,6 @@ class BitmapEditor
 
   def color_instr_arguments(line)
     args = line.split
-    color = line.split[3]
     { x: args[1].to_i,
       y: args[2].to_i,
       color: args[3],

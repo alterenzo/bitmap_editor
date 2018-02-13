@@ -12,6 +12,9 @@ INIT_AND_SHOW_EXAMPLE_OUTPUT = "OOO\nOOO\nOOO\nOOO\n".freeze
 INIT_AND_COLOR_EXAMPLE_FILE = 'init_and_color.txt'.freeze
 INIT_AND_COLOR_EXAMPLE_OUTPUT = "BOO\nOOO\nOOO\nOOA\nOOO\n".freeze
 
+CLEAR_EXAMPLE_FILE = 'clear.txt'.freeze
+CLEAR_EXAMPLE_OUTPUT = "OOO\nOOO\nOOO\n"
+
 describe 'Feature tests' do
   let(:bitmap_editor) { BitmapEditor.new }
 
@@ -25,6 +28,10 @@ describe 'Feature tests' do
 
   it 'creates a bitmap and colors two pixels' do
     run_feature_test(INIT_AND_COLOR_EXAMPLE_FILE, INIT_AND_COLOR_EXAMPLE_OUTPUT)
+  end
+
+  it 'creates a bitmap, colors a line and then clears it' do
+    run_feature_test(CLEAR_EXAMPLE_FILE, CLEAR_EXAMPLE_OUTPUT)
   end
 
   def run_feature_test(filename, output)

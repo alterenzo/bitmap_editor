@@ -68,5 +68,4 @@ module RendererInputValidator
   def x_out_of_bounds?(x, bitmap)
     bitmap[0].length < x || x < 1
   end
-
 end

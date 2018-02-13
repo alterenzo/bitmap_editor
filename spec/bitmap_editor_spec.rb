@@ -147,7 +147,7 @@ describe BitmapEditor do
     it 'delegates the clearing of the bitmap' do
       clear_instruction = 'C'
 
-      expect(renderer).to receive(:clear_bitmap)
+      expect(renderer).to receive(:clear)
         .with(bitmap: instance_of(Array))
 
       bitmap_editor.execute_instruction clear_instruction

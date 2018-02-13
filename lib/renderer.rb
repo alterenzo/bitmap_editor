@@ -1,8 +1,15 @@
+require_relative 'validators/renderer_input_validator.rb'
 # Executes graphic operations on a bitmap
 class Renderer
-  MAX_HEIGHT = 250.freeze
-  MAX_WIDTH = 250.freeze
+  include RendererInputValidator
+  DEFAULT_MAX_HEIGHT = 250.freeze
+  DEFAULT_MAX_WIDTH = 250.freeze
   WHITE = 'O'.freeze
+
+  def initialize(max_height = DEFAULT_MAX_HEIGHT, max_width = DEFAULT_MAX_WIDTH)
+    @max_height = max_height
+    @max_width = max_width
+  end
 
   def color_pixel(x:, y:, color:, bitmap:)
     validate_color_pixel_input(x, y, color, bitmap)
@@ -11,7 +18,7 @@ class Renderer
   end
 
   def create_bitmap(height:, width:)
-    validate_create_bitmap_input(height, width)
+    validate_create_bitmap_input(height, width, @max_height, @max_width)
     Array.new(height) { Array.new(width, WHITE) }
   end
 
@@ -37,56 +44,5 @@ class Renderer
     bitmap.map do |row|
       row.map { |pixel| WHITE }
     end
-  end
-
-  private
-
-  def validate_create_bitmap_input(height, width)
-    raise 'Dimensions must be bigger than 0' if height < 1 || width < 1
-    raise "Dimesions are limited to #{MAX_WIDTH} x #{MAX_HEIGHT}" if height > MAX_HEIGHT || width > 250
-  end
-
-  def validate_color(color)
-    if (!color.instance_of? String || color.length != 1 || color.upcase != color)
-      raise 'Color must be represented by an uppercase string containing one character'
-    end
-  end
-
-  def validate_bitmap(bitmap)
-    raise 'The bitmap cannot be empty' if bitmap.nil? || bitmap.empty?
-  end
-
-  def validate_color_pixel_input(x, y, color, bitmap)
-    validate_bitmap(bitmap)
-    validate_color(color)
-    raise 'The provided coordinates are out of bounds' if x_out_of_bounds?(x, bitmap) || y_out_of_bounds?(y, bitmap)
-  end
-
-  def validate_horizontal_line_input(row, x1, x2, color, bitmap)
-    validate_bitmap(bitmap)
-    validate_range(x1, x2)
-    validate_color(color)
-    raise 'The row number is out of bounds' if y_out_of_bounds?(row, bitmap)
-    raise 'The X coordinates are out of bounds' if x_out_of_bounds?(x1, bitmap) || x_out_of_bounds?(x2, bitmap)
-  end
-
-  def validate_vertical_line_input(column, y1, y2, color, bitmap)
-    validate_bitmap(bitmap)
-    validate_range(y1, y2)
-    validate_color(color)
-    raise 'The column number is out of bounds' if x_out_of_bounds?(column, bitmap)
-    raise 'The Y coordinates are out of bounds' if y_out_of_bounds?(y1, bitmap) || y_out_of_bounds?(y2, bitmap)
-  end
-
-  def validate_range(x1, x2)
-    raise 'The first coordinate of the range must be smaller than the second' if x2 <= x1
-  end
-
-  def y_out_of_bounds?(y, bitmap)
-    bitmap.length < y || y < 1
-  end
-
-  def x_out_of_bounds?(x, bitmap)
-    bitmap[0].length < x || x < 1
   end
 end

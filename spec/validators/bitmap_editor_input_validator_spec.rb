@@ -1,6 +1,6 @@
 require 'validators/bitmap_editor_input_validator.rb'
 
-describe 'BitmapEditorInputValidator' do
+describe BitmapEditorInputValidator do
   let(:validator) { Class.new { extend BitmapEditorInputValidator } }
 
   describe '#validate_init_instruction' do

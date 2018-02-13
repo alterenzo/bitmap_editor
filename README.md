@@ -60,8 +60,8 @@ __Example:__ 'S'
 
 To run the tests, simply install all the gems with bundler, and run rspec
 
-`>bundle install`
-`>rspec`
+`>bundle install
+>rspec`
 
 # Running
 
